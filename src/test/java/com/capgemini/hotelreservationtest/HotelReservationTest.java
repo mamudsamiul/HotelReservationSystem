@@ -5,7 +5,7 @@ package com.capgemini.hotelreservationtest;
 
 import org.junit.Test;
 
-
 import static org.junit.Assert.*;
 
-public class HotelReservationTest {}
+public class HotelReservationTest {
+}
