@@ -2,7 +2,7 @@ package com.capgemini.hotelreservation.dto;
 
 public class Hotel {
 	private String hotelName;
-	private float regularRate;
+	private double regularRate;
 
 	public String getHotelName() {
 		return hotelName;
@@ -12,11 +12,11 @@ public class Hotel {
 		this.hotelName = hotelName;
 	}
 
-	public float getRegularRate() {
+	public double getRegularRate() {
 		return regularRate;
 	}
 
-	public void setRegularRate(float regularRate) {
+	public void setRegularRate(double regularRate) {
 		this.regularRate = regularRate;
 	}
 }
