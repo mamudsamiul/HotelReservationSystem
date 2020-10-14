@@ -9,7 +9,7 @@ import com.capgemini.hotelreservation.service.HotelReservationService;
 public class HotelReservationServiceImplementation implements HotelReservationService {
 	private ArrayList<Hotel> hotelList = new ArrayList<Hotel>();
 	private String hotelName;
-	private int hotelPrice;
+	private double hotelPrice;
 
 	public HotelReservationServiceImplementation() {
 	}
@@ -22,7 +22,7 @@ public class HotelReservationServiceImplementation implements HotelReservationSe
 			System.out.println("Enter the Hotel Name: ");
 			this.hotelName = scan.next();
 			System.out.println("Enter The price of the hotel for one day: ");
-			this.hotelPrice = scan.nextInt();
+			this.hotelPrice = scan.nextDouble();
 		} catch (Exception e) {
 			System.out.println("Invalid Input type!");
 			flag = false;
@@ -36,6 +36,14 @@ public class HotelReservationServiceImplementation implements HotelReservationSe
 		} else
 			System.out.println("SORRY!! Unable to add hotel in the dictionary!!");
 
+	}
+
+	@Override
+	public void addHotel(String hotelName, float hotelRate) {
+		Hotel hotel = new Hotel();
+		hotel.setHotelName(hotelName);
+		hotel.setRegularRate(hotelRate);
+		hotelList.add(hotel);
 	}
 
 	public ArrayList<Hotel> getHotelList() {
@@ -57,5 +65,29 @@ public class HotelReservationServiceImplementation implements HotelReservationSe
 				System.out.println();
 			}
 		}
+	}
+
+	@Override
+	public Hotel findCheapHotel(String dateRange) {
+		int counter = 0;
+		String[] words = dateRange.toLowerCase().split(",");
+		counter = words.length;
+		return checkRate(counter);
+	}
+
+	@Override
+	public Hotel checkRate(int noOfDays) {
+		Hotel name;
+		Double minPrice = hotelList.get(0).getRegularRate();
+		name = hotelList.get(0);
+		name.setRegularRate(minPrice * noOfDays);
+		for (Hotel hotel : hotelList) {
+			if (hotel.getRegularRate() < minPrice) {
+				minPrice = hotel.getRegularRate();
+				name.setHotelName(hotel.getHotelName());
+				name.setRegularRate(hotel.getRegularRate() * noOfDays);
+			}
+		}
+		return name;
 	}
 }
