@@ -1,5 +1,6 @@
 package com.capgemini.hotelreservation.service;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import com.capgemini.hotelreservation.dto.Hotel;
@@ -13,10 +14,9 @@ public interface HotelReservationService {
 
 	public Hotel findCheapHotel(String dateRange);
 
-	public Hotel checkRate(int noOfDays);
+	public Hotel minRate(ArrayList<Hotel> priceList);
 
-	public boolean validateDate(String dateToValidate);
+	public int validateDate(String dateToValidate);
 
 	public boolean validateRange(String dateRange);
-
 }

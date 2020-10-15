@@ -77,51 +77,67 @@ public class HotelReservationServiceImplementation implements HotelReservationSe
 	public Hotel findCheapHotel(String dateRange) {
 		int counter = 0;
 		String[] words = dateRange.split(",");
-		counter = words.length;
-		return checkRate(counter);
+		ArrayList<Hotel> priceList = new ArrayList<Hotel>();
+		for (Hotel hotel : hotelList) {
+			double price = 0;
+			Hotel temp = hotel;
+			for (String word : words) {
+				int day = validateDate(word);
+				if (day == 0 || day == 6) {
+					price += hotel.getRegularWeekendRate();
+				} else {
+					price += hotel.getRegularWeekdaysRate();
+				}
+			}
+			temp.setHotelName(hotel.getHotelName());
+			temp.setRegularWeekdaysRate(price);
+			priceList.add(temp);
+		}
+		return minRate(priceList);
 	}
 
 	@Override
-	public Hotel checkRate(int noOfDays) {
+	public Hotel minRate(ArrayList<Hotel> priceList) {
 		Hotel name;
-		Double minPrice = hotelList.get(0).getRegularWeekdaysRate();
-		name = hotelList.get(0);
-		name.setRegularWeekdaysRate(minPrice * noOfDays);
-		for (Hotel hotel : hotelList) {
+		Double minPrice = priceList.get(0).getRegularWeekdaysRate();
+		name = priceList.get(0);
+		name.setRegularWeekdaysRate(minPrice);
+		for (Hotel hotel : priceList) {
 			if (hotel.getRegularWeekdaysRate() < minPrice) {
 				minPrice = hotel.getRegularWeekdaysRate();
 				name.setHotelName(hotel.getHotelName());
-				name.setRegularWeekdaysRate(hotel.getRegularWeekdaysRate() * noOfDays);
+				name.setRegularWeekdaysRate(hotel.getRegularWeekdaysRate());
 			}
 		}
 		return name;
 	}
 
 	@Override
-	public boolean validateDate(String dateToValidate) {
+	public int validateDate(String dateToValidate) {
 		String dateFromat = "ddMMMyyyy";
 		if (dateToValidate == null) {
-			return false;
+			return -1;
 		}
 		SimpleDateFormat sdf = new SimpleDateFormat(dateFromat);
 		sdf.setLenient(false);
+		Date date;
 
 		try {
-			Date date = sdf.parse(dateToValidate);
+			date = sdf.parse(dateToValidate);
 
 		} catch (ParseException e) {
 			System.out.println("Invalid Date Entry!!");
-			return false;
+			return -1;
 		}
 
-		return true;
+		return date.getDay();
 	}
 
 	@Override
 	public boolean validateRange(String dateRange) {
 		String[] dates = dateRange.split(",");
 		for (String date : dates) {
-			if (!validateDate(date))
+			if (validateDate(date) < 0)
 				return false;
 		}
 		return true;
