@@ -12,14 +12,14 @@ public class HotelReservation {
 		System.out.println("========================================");
 		Scanner scan = new Scanner(System.in);
 		HotelReservationServiceImplementation hotelReservation = new HotelReservationServiceImplementation();
-		hotelReservation.addHotel("avc", 123);
-		hotelReservation.addHotel("xyz", 234);
+		hotelReservation.addHotel("avc", 123, 60);
+		hotelReservation.addHotel("xyz", 234, 76);
 		hotelReservation.showHotelList();
 		System.out.println("Enter the date Range in '16Mar2020,17Mar2020' this format");
 		String dateRange = scan.next();
-		Hotel bestHotel = hotelReservation.findCheapHotel(dateRange);
-		System.out.println(bestHotel.getHotelName() + ", Total Rates $" + bestHotel.getRegularRate());
-
+		if (hotelReservation.validateRange(dateRange)) {
+			Hotel bestHotel = hotelReservation.findCheapHotel(dateRange);
+			System.out.println(bestHotel.getHotelName() + ", Total Rates $" + bestHotel.getRegularWeekdaysRate());
+		}
 	}
-
 }
