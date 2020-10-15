@@ -8,7 +8,7 @@ import com.capgemini.hotelreservation.dto.Hotel;
 public interface HotelReservationService {
 	public void addHotel(Scanner scan);
 
-	public void addHotel(String hotelName, float regularWeekdaysRate, float regularWeenendRate);
+	public void addHotel(String hotelName, float regularWeekdaysRate, float regularWeenendRate,float rating);
 
 	public void showHotelList();
 
