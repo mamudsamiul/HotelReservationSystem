@@ -43,11 +43,14 @@ public class HotelReservationServiceImplementation implements HotelReservationSe
 	}
 
 	@Override
-	public void addHotel(String hotelName, float regularWeekdaysRate, float regularWeekendRate, float rating) {
+	public void addHotel(String hotelName, double regularWeekdaysRate, double regularWeekendRate, double rating,
+			double rewardWeekdayRate, double rewardWeekendRate) {
 		Hotel hotel = new Hotel();
 		hotel.setHotelName(hotelName);
 		hotel.setRegularWeekdaysRate(regularWeekdaysRate);
 		hotel.setRegularWeekendRate(regularWeekendRate);
+		hotel.setRewardWeekdaysRate(rewardWeekdayRate);
+		hotel.setRewardWeekendRate(rewardWeekendRate);
 		hotel.setRating(rating);
 		hotelList.add(hotel);
 	}
@@ -76,7 +79,7 @@ public class HotelReservationServiceImplementation implements HotelReservationSe
 	}
 
 	@Override
-	public Hotel findCheapHotel(String dateRange) {
+	public Hotel findCheapHotel(String dateRange, boolean type, boolean bestOrCheap) {
 		int counter = 0;
 		String[] words = dateRange.split(",");
 		ArrayList<Hotel> priceList = new ArrayList<Hotel>();
@@ -86,30 +89,44 @@ public class HotelReservationServiceImplementation implements HotelReservationSe
 			for (String word : words) {
 				int day = validateDate(word);
 				if (day == 0 || day == 6) {
-					price += hotel.getRegularWeekendRate();
+					if (!type)
+						price += hotel.getRegularWeekendRate();
+					else
+						price += hotel.getRewardWeekendRate();
 				} else {
-					price += hotel.getRegularWeekdaysRate();
+					if (!type)
+						price += hotel.getRegularWeekdaysRate();
+					else
+						price += hotel.getRewardWeekdaysRate();
 				}
 			}
 			temp.setHotelName(hotel.getHotelName());
 			temp.setRegularWeekdaysRate(price);
 			priceList.add(temp);
 		}
-		ArrayList<Hotel> sameRate = minRate(priceList);
-		if (sameRate.size() == 1)
-			return sameRate.get(0);
-		else {
-			double maxRating = sameRate.get(0).getRating();
-			Hotel bestHotel = sameRate.get(0);
-			for (Hotel hotel : sameRate) {
-				if (hotel.getRating() > maxRating) {
-					maxRating = hotel.getRating();
-					bestHotel = hotel;
-				}
+		if (!bestOrCheap) {
+			ArrayList<Hotel> sameRate = minRate(priceList);
+			if (sameRate.size() == 1)
+				return sameRate.get(0);
+			else {
+				return maxRatingHotel(sameRate);
 			}
-
-			return bestHotel;
+		} else {
+			return maxRatingHotel(priceList);
 		}
+
+	}
+
+	private Hotel maxRatingHotel(ArrayList<Hotel> list) {
+		double maxRating = list.get(0).getRating();
+		Hotel bestHotel = list.get(0);
+		for (Hotel hotel : list) {
+			if (hotel.getRating() > maxRating) {
+				maxRating = hotel.getRating();
+				bestHotel = hotel;
+			}
+		}
+		return bestHotel;
 	}
 
 	@Override
@@ -164,5 +181,15 @@ public class HotelReservationServiceImplementation implements HotelReservationSe
 				return false;
 		}
 		return true;
+	}
+
+	@Override
+	public boolean customerTypeInput(Scanner scan) {
+		System.out.println("Are you a Reward Customer? (Y/N)");
+		String userType = scan.next();
+		if (userType.toLowerCase().equals("y"))
+			return true;
+		else
+			return false;
 	}
 }
