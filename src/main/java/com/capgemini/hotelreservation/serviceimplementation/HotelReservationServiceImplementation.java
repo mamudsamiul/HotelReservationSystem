@@ -43,11 +43,12 @@ public class HotelReservationServiceImplementation implements HotelReservationSe
 	}
 
 	@Override
-	public void addHotel(String hotelName, float regularWeekdaysRate, float regularWeekendRate) {
+	public void addHotel(String hotelName, float regularWeekdaysRate, float regularWeekendRate,float rating) {
 		Hotel hotel = new Hotel();
 		hotel.setHotelName(hotelName);
 		hotel.setRegularWeekdaysRate(regularWeekdaysRate);
 		hotel.setRegularWeekendRate(regularWeekendRate);
+		hotel.setRating(rating);
 		hotelList.add(hotel);
 	}
 
@@ -67,7 +68,7 @@ public class HotelReservationServiceImplementation implements HotelReservationSe
 		else {
 			for (Hotel hotel : hotelList) {
 				System.out.print("Hotel Name-> " + hotel.getHotelName() + " Weekdays Rate= "
-						+ hotel.getRegularWeekdaysRate() + " Weekend rate= " + hotel.getRegularWeekendRate());
+						+ hotel.getRegularWeekdaysRate() + " Weekend rate= " + hotel.getRegularWeekendRate()+" rating= " + hotel.getRating());
 				System.out.println();
 			}
 		}
