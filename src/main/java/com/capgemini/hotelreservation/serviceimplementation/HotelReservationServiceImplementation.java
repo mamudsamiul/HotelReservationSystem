@@ -1,6 +1,9 @@
 package com.capgemini.hotelreservation.serviceimplementation;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
 
 import com.capgemini.hotelreservation.dto.Hotel;
@@ -9,7 +12,8 @@ import com.capgemini.hotelreservation.service.HotelReservationService;
 public class HotelReservationServiceImplementation implements HotelReservationService {
 	private ArrayList<Hotel> hotelList = new ArrayList<Hotel>();
 	private String hotelName;
-	private double hotelPrice;
+	private double regularWeekdaysRate;
+	private double regularWeekendRate;
 
 	public HotelReservationServiceImplementation() {
 	}
@@ -22,7 +26,7 @@ public class HotelReservationServiceImplementation implements HotelReservationSe
 			System.out.println("Enter the Hotel Name: ");
 			this.hotelName = scan.next();
 			System.out.println("Enter The price of the hotel for one day: ");
-			this.hotelPrice = scan.nextDouble();
+			this.regularWeekdaysRate = scan.nextDouble();
 		} catch (Exception e) {
 			System.out.println("Invalid Input type!");
 			flag = false;
@@ -30,7 +34,7 @@ public class HotelReservationServiceImplementation implements HotelReservationSe
 		if (flag) {
 			Hotel hotel = new Hotel();
 			hotel.setHotelName(hotelName);
-			hotel.setRegularRate(hotelPrice);
+			hotel.setRegularWeekdaysRate(regularWeekdaysRate);
 			hotelList.add(hotel);
 			System.out.println("Hotel Added Sucessfully!");
 		} else
@@ -39,10 +43,11 @@ public class HotelReservationServiceImplementation implements HotelReservationSe
 	}
 
 	@Override
-	public void addHotel(String hotelName, float hotelRate) {
+	public void addHotel(String hotelName, float regularWeekdaysRate, float regularWeekendRate) {
 		Hotel hotel = new Hotel();
 		hotel.setHotelName(hotelName);
-		hotel.setRegularRate(hotelRate);
+		hotel.setRegularWeekdaysRate(regularWeekdaysRate);
+		hotel.setRegularWeekendRate(regularWeekendRate);
 		hotelList.add(hotel);
 	}
 
@@ -61,7 +66,8 @@ public class HotelReservationServiceImplementation implements HotelReservationSe
 			System.out.println("Empty!!");
 		else {
 			for (Hotel hotel : hotelList) {
-				System.out.print("Hotel Name-> " + hotel.getHotelName() + " Rate= " + hotel.getRegularRate());
+				System.out.print("Hotel Name-> " + hotel.getHotelName() + " Weekdays Rate= "
+						+ hotel.getRegularWeekdaysRate() + " Weekend rate= " + hotel.getRegularWeekendRate());
 				System.out.println();
 			}
 		}
@@ -70,7 +76,7 @@ public class HotelReservationServiceImplementation implements HotelReservationSe
 	@Override
 	public Hotel findCheapHotel(String dateRange) {
 		int counter = 0;
-		String[] words = dateRange.toLowerCase().split(",");
+		String[] words = dateRange.split(",");
 		counter = words.length;
 		return checkRate(counter);
 	}
@@ -78,16 +84,46 @@ public class HotelReservationServiceImplementation implements HotelReservationSe
 	@Override
 	public Hotel checkRate(int noOfDays) {
 		Hotel name;
-		Double minPrice = hotelList.get(0).getRegularRate();
+		Double minPrice = hotelList.get(0).getRegularWeekdaysRate();
 		name = hotelList.get(0);
-		name.setRegularRate(minPrice * noOfDays);
+		name.setRegularWeekdaysRate(minPrice * noOfDays);
 		for (Hotel hotel : hotelList) {
-			if (hotel.getRegularRate() < minPrice) {
-				minPrice = hotel.getRegularRate();
+			if (hotel.getRegularWeekdaysRate() < minPrice) {
+				minPrice = hotel.getRegularWeekdaysRate();
 				name.setHotelName(hotel.getHotelName());
-				name.setRegularRate(hotel.getRegularRate() * noOfDays);
+				name.setRegularWeekdaysRate(hotel.getRegularWeekdaysRate() * noOfDays);
 			}
 		}
 		return name;
+	}
+
+	@Override
+	public boolean validateDate(String dateToValidate) {
+		String dateFromat = "ddMMMyyyy";
+		if (dateToValidate == null) {
+			return false;
+		}
+		SimpleDateFormat sdf = new SimpleDateFormat(dateFromat);
+		sdf.setLenient(false);
+
+		try {
+			Date date = sdf.parse(dateToValidate);
+
+		} catch (ParseException e) {
+			System.out.println("Invalid Date Entry!!");
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public boolean validateRange(String dateRange) {
+		String[] dates = dateRange.split(",");
+		for (String date : dates) {
+			if (!validateDate(date))
+				return false;
+		}
+		return true;
 	}
 }
