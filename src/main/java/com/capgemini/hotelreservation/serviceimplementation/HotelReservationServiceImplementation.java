@@ -43,7 +43,7 @@ public class HotelReservationServiceImplementation implements HotelReservationSe
 	}
 
 	@Override
-	public void addHotel(String hotelName, float regularWeekdaysRate, float regularWeekendRate,float rating) {
+	public void addHotel(String hotelName, float regularWeekdaysRate, float regularWeekendRate, float rating) {
 		Hotel hotel = new Hotel();
 		hotel.setHotelName(hotelName);
 		hotel.setRegularWeekdaysRate(regularWeekdaysRate);
@@ -67,8 +67,9 @@ public class HotelReservationServiceImplementation implements HotelReservationSe
 			System.out.println("Empty!!");
 		else {
 			for (Hotel hotel : hotelList) {
-				System.out.print("Hotel Name-> " + hotel.getHotelName() + " Weekdays Rate= "
-						+ hotel.getRegularWeekdaysRate() + " Weekend rate= " + hotel.getRegularWeekendRate()+" rating= " + hotel.getRating());
+				System.out.print(
+						"Hotel Name-> " + hotel.getHotelName() + " Weekdays Rate= " + hotel.getRegularWeekdaysRate()
+								+ " Weekend rate= " + hotel.getRegularWeekendRate() + " rating= " + hotel.getRating());
 				System.out.println();
 			}
 		}
@@ -94,23 +95,44 @@ public class HotelReservationServiceImplementation implements HotelReservationSe
 			temp.setRegularWeekdaysRate(price);
 			priceList.add(temp);
 		}
-		return minRate(priceList);
+		ArrayList<Hotel> sameRate = minRate(priceList);
+		if (sameRate.size() == 1)
+			return sameRate.get(0);
+		else {
+			double maxRating = sameRate.get(0).getRating();
+			Hotel bestHotel = sameRate.get(0);
+			for (Hotel hotel : sameRate) {
+				if (hotel.getRating() > maxRating) {
+					maxRating = hotel.getRating();
+					bestHotel = hotel;
+				}
+			}
+
+			return bestHotel;
+		}
 	}
 
 	@Override
-	public Hotel minRate(ArrayList<Hotel> priceList) {
+	public ArrayList<Hotel> minRate(ArrayList<Hotel> priceList) {
 		Hotel name;
+		ArrayList<Hotel> samePrice = new ArrayList<>();
 		Double minPrice = priceList.get(0).getRegularWeekdaysRate();
 		name = priceList.get(0);
 		name.setRegularWeekdaysRate(minPrice);
+		samePrice.add(name);
 		for (Hotel hotel : priceList) {
-			if (hotel.getRegularWeekdaysRate() < minPrice) {
-				minPrice = hotel.getRegularWeekdaysRate();
-				name.setHotelName(hotel.getHotelName());
-				name.setRegularWeekdaysRate(hotel.getRegularWeekdaysRate());
+			if (hotel.getRegularWeekdaysRate() <= minPrice) {
+				if (hotel.getRegularWeekdaysRate() < minPrice) {
+					samePrice.clear();
+					minPrice = hotel.getRegularWeekdaysRate();
+					name.setHotelName(hotel.getHotelName());
+					name.setRegularWeekdaysRate(hotel.getRegularWeekdaysRate());
+
+				}
+				samePrice.add(name);
 			}
 		}
-		return name;
+		return samePrice;
 	}
 
 	@Override
