@@ -12,8 +12,9 @@ public class HotelReservation {
 		System.out.println("========================================");
 		Scanner scan = new Scanner(System.in);
 		HotelReservationServiceImplementation hotelReservation = new HotelReservationServiceImplementation();
-		hotelReservation.addHotel("Bridegwood", 150, 50,3);
-		hotelReservation.addHotel("Lakewood", 220, 150,4);
+		hotelReservation.addHotel("Bridegwood", 150, 50,4);
+		hotelReservation.addHotel("Lakewood", 150, 50,3);
+		hotelReservation.addHotel("Ridgewood", 220, 150,5);
 		hotelReservation.showHotelList();
 		System.out.println("Enter the date Range in '16Mar2020,17Mar2020' this format");
 		String dateRange = scan.next();
