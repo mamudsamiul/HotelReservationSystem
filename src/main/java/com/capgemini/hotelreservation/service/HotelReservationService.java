@@ -15,11 +15,8 @@ public interface HotelReservationService {
 
 	public Hotel findCheapHotel(String dateRange, boolean type, boolean bestOrCheap);
 
-	public ArrayList<Hotel> minRate(ArrayList<Hotel> priceList);
-
 	public int validateDate(String dateToValidate);
 
 	public boolean validateRange(String dateRange);
 
-	public boolean customerTypeInput(Scanner scan);
 }
